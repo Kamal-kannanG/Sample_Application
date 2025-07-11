@@ -1,7 +1,7 @@
 name: Deploy FastAPI to Azure Container Apps
 
 on:
-  commit:
+  push:
     branches: [main]
 
 jobs:
