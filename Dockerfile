@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY main.py ./
 
-RUN pip install --no-cache-dir fastapi uvicorn[standard] python-docx pymupdf
+RUN pip install --no-cache-dir fastapi uvicorn[standard] python-docx pymupdf python-multipart
 
 EXPOSE 8000
 
