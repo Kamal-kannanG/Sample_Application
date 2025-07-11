@@ -1,0 +1,37 @@
+name: Deploy FastAPI to Azure Container Apps
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Build and Push Docker image to ACR
+      uses: azure/docker-login@v1
+      with:
+        login-server: thcontreg.azurecr.io
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+
+    - name: Build and push
+      run: |
+        docker build -t thcontreg.azurecr.io/my-fastapi-app:latest .
+        docker push thcontreg.azurecr.io/my-fastapi-app:latest
+
+    - name: Deploy to Container Apps
+      run: |
+        az containerapp update \
+          --name my-fastapi-app \
+          --resource-group my-fastapi-rg \
+          --image thcontreg.azurecr.io/my-fastapi-app:latest
